@@ -1,8 +1,8 @@
 
 class xoBoard:
-    def __init__(self):
-        self.board = [[0,0,0],[0,0,0],[0,0,0]]
-    def __init__(self, board):
+##    def __init__(self):
+##        self.board = [[0,0,0],[0,0,0],[0,0,0]]
+    def __init__(self, board= [[0,0,0],[0,0,0],[0,0,0]]):
         self.board = board
 
     def GetBoard(self):
@@ -17,7 +17,7 @@ class xoBoard:
         return retValue
 
     def WinningPos(self, player):
-        if (player != 1) or (player != 2):
+        if (player != 1) and (player != 2):
             raise RuntimeError("Player must be 1 or 2")
         retValue = []
         #across
@@ -39,7 +39,7 @@ class xoBoard:
                 if self.board[j][i]==0:
                     posOfZero = i
             if (count[0]==1) and (count[player]==2):
-                retValue.append([posOfZero, i])
+                retValue.append([posOfZero, j])
         #'\' and '/'
         count = [0,0,0]
         posOfZero = -1
@@ -63,7 +63,7 @@ class xoBoard:
         pass
 
     def HasWon(self, player):
-        if (player != 1) or (player != 2):
+        if (player != 1) and (player != 2):
             raise RuntimeError("Player must be 1 or 2")
         #across
         for j in range(3):
@@ -94,6 +94,9 @@ class xoBoard:
 
     def FlipState(self, x, y, state):
         self.board[x][y] = state
+
+    def __repr__(self):
+        return '<'+str(self.board)+" xoBoard>"
 
 class NextMoveProvider:
     def __init__(self, depth, player):
@@ -168,6 +171,11 @@ class NextMoveProvider:
                 lowestWeight = i[0]
                 chosenMove = i
         return chosenMove
+
+    #wrapper for NextMove
+    def GetMove(self, board):
+        return self.NextMove(board, self.depth)
+    
     
                     
 
