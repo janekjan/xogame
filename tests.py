@@ -15,5 +15,11 @@ print(board.HasWon(2))
 board.FlipState(2,0,0)
 print(board.GetBoard())
 
-onepass = NextMoveProvider(1,2)
-print(onepass.GetMove(board))
+board = xoBoard([[0,1,2],[0,1,0],[0,2,0]])
+print(board.GetBoard())
+
+##onepass = NextMoveProvider(1,2)
+##print(onepass.GetMove(board))
+
+twopass = NextMoveProvider(2,2)
+print(twopass.GetMove(board))

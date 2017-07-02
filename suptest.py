@@ -1,0 +1,9 @@
+from xoboard import *
+
+board = xoBoard()
+board.FlipState(1,1,2)
+#...
+#...
+#...
+fourpass = NextMoveProvider(4, 1)
+print(fourpass.GetMove(board))

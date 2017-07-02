@@ -1,4 +1,3 @@
-from copy import deepcopy
 
 class xoBoard:
 ##    def __init__(self):
@@ -113,7 +112,6 @@ class NextMoveProvider:
             raise RuntimeError("Player must be 1 or 2")
 
     def CalculateWeight(self, board):
-        print("calculating weight for", board)
         if board.HasWon(self.opponent):
             return [1, board]
         if board.HasWon(self.player):
@@ -125,7 +123,6 @@ class NextMoveProvider:
         return [3, board]
 
     def NextMove(self, board, depth):
-        print("nextmove, depth", depth)
         if depth==0:
             return self.CalculateWeight(board)
         #generate possibe self.player's moves
@@ -135,19 +132,15 @@ class NextMoveProvider:
         for i in range(3):
             for j in range(3):
                 if boardTable[i][j]==0:
-                    #myMoves.append(xoBoard(boardTable))
-                    myMoves.append(deepcopy(board))
+                    myMoves.append(xoBoard(boardTable))
                     myMoves[-1].FlipState(i, j, self.player)
                     #instant win
                     if myMoves[-1].HasWon(self.player):
-                        print("found win", myMoves)
                         return [5, myMoves[-1]]
-        print("mymoves", myMoves)
         #for every possible move get opponent's assumed best move
         opponentsBestMoves = []
         for i in myMoves:
             opponentsBestMoves.append(self.OpponentsMove(i, depth))
-        print("opponents best", opponentsBestMoves)
         #calculate my best move
         highestWeight = 0
         for i in opponentsBestMoves:
@@ -162,7 +155,7 @@ class NextMoveProvider:
         for i in range(3):
             for j in range(3):
                 if boardTable[i][j]==0:
-                    opponentMoves.append(deepcopy(board))
+                    opponentMoves.append(xoBoard(boardTable))
                     opponentMoves[-1].FlipState(i, j, self.opponent)
                     #instant loose
                     if opponentMoves[-1].HasWon(self.opponent):
