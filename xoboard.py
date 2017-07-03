@@ -1,5 +1,10 @@
 from copy import deepcopy
 
+VERBOSE = False
+def verboseLog(s, t=''):
+    if VERBOSE:
+        print(s, t)
+
 class xoBoard:
 ##    def __init__(self):
 ##        self.board = [[0,0,0],[0,0,0],[0,0,0]]
@@ -113,7 +118,7 @@ class NextMoveProvider:
             raise RuntimeError("Player must be 1 or 2")
 
     def CalculateWeight(self, board):
-        print("calculating weight for", board)
+        verboseLog("calculating weight for", board)
         if board.HasWon(self.opponent):
             return [1, board]
         if board.HasWon(self.player):
@@ -124,10 +129,15 @@ class NextMoveProvider:
             return [4, board]
         return [3, board]
 
-    def NextMove(self, board, depth):
-        print("nextmove, depth", depth)
+    def NextMove(self, board, depth, first=[]):
+        verboseLog("nextmove, depth", depth)
+        #first reveals the chosen move, not the predicted outcome
+        if (first==[]) and (depth < self.depth):
+            first = deepcopy(board)
         if depth==0:
-            return self.CalculateWeight(board)
+            retVal = self.CalculateWeight(board)
+            retVal.append(first)
+            return retVal
         #generate possibe self.player's moves
         #need to use deepcopy techinique so as to obtain a separate object
         boardTable = board.GetBoard()
@@ -140,14 +150,14 @@ class NextMoveProvider:
                     myMoves[-1].FlipState(i, j, self.player)
                     #instant win
                     if myMoves[-1].HasWon(self.player):
-                        print("found win", myMoves)
-                        return [5, myMoves[-1]]
-        print("mymoves", myMoves)
+                        verboseLog("found win", myMoves)
+                        return [5, myMoves[-1], first]
+        verboseLog("mymoves", myMoves)
         #for every possible move get opponent's assumed best move
         opponentsBestMoves = []
         for i in myMoves:
-            opponentsBestMoves.append(self.OpponentsMove(i, depth))
-        print("opponents best", opponentsBestMoves)
+            opponentsBestMoves.append(self.OpponentsMove(i, depth, first))
+        verboseLog("opponents best", opponentsBestMoves)
         #calculate my best move
         highestWeight = 0
         for i in opponentsBestMoves:
@@ -156,7 +166,7 @@ class NextMoveProvider:
                 chosenMove = i
         return chosenMove
     
-    def OpponentsMove(self, board, depth):
+    def OpponentsMove(self, board, depth, first):
         boardTable = board.GetBoard()
         opponentMoves = []
         for i in range(3):
@@ -166,22 +176,36 @@ class NextMoveProvider:
                     opponentMoves[-1].FlipState(i, j, self.opponent)
                     #instant loose
                     if opponentMoves[-1].HasWon(self.opponent):
-                        return [1, opponentMoves[-1]]
+                        return [1, opponentMoves[-1], first]
         # pass to my next move
         myNextMoves = []
         for i in opponentMoves:
-            myNextMoves.append(self.NextMove(i, depth-1))
+            myNextMoves.append(self.NextMove(i, depth-1, first))
         #assume best possible opponent's move
         lowestWeight = 6
+        verboseLog('opponentsmove mynextmoves:', myNextMoves)
+        #if the board is full, just return what we got sofar
+        if myNextMoves==[]:
+            retVal = self.CalculateWeight(board)
+            retVal.append(first)
+            return retVal
         for i in myNextMoves:
             if i[0]<lowestWeight:
                 lowestWeight = i[0]
                 chosenMove = i
         return chosenMove
 
-    #wrapper for NextMove
+    #wrapper for NextMove, and more
     def GetMove(self, board):
-        return self.NextMove(board, self.depth)
+        newboardobj = self.NextMove(board, self.depth)
+        x, y = -1, -1
+        newboard = newboardobj[2].GetBoard()
+        oldboard = board.GetBoard()
+        for i in range(3):
+            for j in range(3):
+                if (oldboard[i][j]==0) and (newboard[i][j]==self.player):
+                    return (i, j)
+        raise RuntimeError("Something went wrong, no move found")
     
     
                     

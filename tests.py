@@ -21,5 +21,5 @@ print(board.GetBoard())
 ##onepass = NextMoveProvider(1,2)
 ##print(onepass.GetMove(board))
 
-twopass = NextMoveProvider(2,2)
+twopass = NextMoveProvider(2, 2)
 print(twopass.GetMove(board))
