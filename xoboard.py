@@ -1,6 +1,6 @@
 from copy import deepcopy
 
-VERBOSE = False
+VERBOSE = True
 def verboseLog(s, t=''):
     if VERBOSE:
         print(s, t)
@@ -159,6 +159,11 @@ class NextMoveProvider:
             opponentsBestMoves.append(self.OpponentsMove(i, depth, first))
         verboseLog("opponents best", opponentsBestMoves)
         #calculate my best move
+        #if the board is full, just return what we got sofar
+        if opponentsBestMoves==[]:
+            retVal = self.CalculateWeight(board)
+            retVal.append(first)
+            return retVal
         highestWeight = 0
         for i in opponentsBestMoves:
             if i[0]>highestWeight:
@@ -199,6 +204,8 @@ class NextMoveProvider:
     def GetMove(self, board):
         newboardobj = self.NextMove(board, self.depth)
         x, y = -1, -1
+        verboseLog('getmove newboardobj', newboardobj)
+        if newboardobj[2]==[]: newboardobj[2] = newboardobj[1]
         newboard = newboardobj[2].GetBoard()
         oldboard = board.GetBoard()
         for i in range(3):
