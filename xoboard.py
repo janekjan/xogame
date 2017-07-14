@@ -215,7 +215,8 @@ class NextMoveProvider:
                 if (oldboard[i][j]==0) and (newboard[i][j]==self.player):
                     return (i, j)
         raise RuntimeError("Something went wrong, no move found")
-    
+
+
     
                     
 

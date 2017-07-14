@@ -1,5 +1,7 @@
 from xoboard import *
+from xomoves import *
 
+'''
 board = xoBoard([[2,0,1],[2,1,0],[1,0,2]])
 print(board.GetBoard())
 print(board.WinningPos(1))
@@ -23,3 +25,9 @@ print(board.GetBoard())
 
 twopass = NextMoveProvider(2, 2)
 print(twopass.GetMove(board))
+'''
+
+board = xoBoard()
+fullminimax = MinmaxFull(10, 1)
+
+print(fullminimax.minimax(board, 1))

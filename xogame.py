@@ -5,7 +5,7 @@ from sys import exit
 from xoboard import *
 
 #SETTINGS
-PREDICTION_DEPTH = 1
+PREDICTION_DEPTH = 2
 PLAYER_SYMBOL = 2
 I_START = True
 
