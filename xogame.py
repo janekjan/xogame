@@ -62,8 +62,8 @@ screen = pygame.display.set_mode((600, 600))
 clock = pygame.time.Clock()
 pygame.display.set_caption('Gra O i X')
 
-mover = MinmaxFull(PREDICTION_DEPTH, MY_SYMBOL)
-#mover = NextMoveProvider(PREDICTION_DEPTH, MY_SYMBOL)
+#mover = MinmaxFull(PREDICTION_DEPTH, MY_SYMBOL)
+mover = NextMoveProvider(PREDICTION_DEPTH, MY_SYMBOL)
 #mover = AlphaBeta(PREDICTION_DEPTH, MY_SYMBOL)
 
 #prepare gameboard

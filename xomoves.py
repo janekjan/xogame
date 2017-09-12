@@ -75,37 +75,55 @@ class MinmaxFull:
             return [4, board]
         return [3, board]
 
-    def minimax(self, board, depth, isItMe):
+    def minimax(self, board, depth, isItMe, chBoard = False):
+        verboseLog('minimax depth ', depth)
         if depth==0:
             verboseLog('minimax weight==0')
             pom = self.CalculateWeight(board)
-            return pom[0]
+            return pom
+        '''
         if (not isItMe) and board.WinningPos(self.player):
-            return WEIGHT_OF_WIN
+            return [WEIGHT_OF_WIN, board]
         if isItMe and board.WinningPos(self.opponent):
-            return -WEIGHT_OF_WIN
-        
+            return [-WEIGHT_OF_WIN, board]
+        '''
         if isItMe:
-            best = -WEIGHT_OF_WIN
+            best = [-WEIGHT_OF_WIN,'error']
             children = board.GetChildren(self.player)
             for child in children:
                 pom = self.minimax(child, depth-1, False)
-                best = max(best, pom)
+                if pom[0]>=best[0]:
+                    best = deepcopy(pom)
+            if not chBoard:
+                best[1] = board   #deepcopy?
             return best
         else:
-            best = WEIGHT_OF_WIN
+            best = [WEIGHT_OF_WIN, 'error']
             children = board.GetChildren(self.opponent)
             for child in children:
                 pom = self.minimax(child, depth-1, True)
-                verboseLog('minimax best ', best)
-                verboseLog('minimax pom ', pom)
-                best = min(best, pom)
+                #verboseLog('minimax best ', best)
+                #verboseLog('minimax pom ', pom)
+                if pom[0]<=best[0]:
+                    best = deepcopy(pom)
+            if not chBoard:
+                best[1] = board  #Deepcopy?
             return best
         raise RuntimeError("Something Went Wrong with recursion!")
             
         
     def GetMove(self, board):
-        return self.minimax(board, self.depth, True)
+        resboard =  self.minimax(board, self.depth, True, True)
+        verboseLog('GetMove resboard ', resboard)
+        x, y = -1, -1
+        newboard = resboard[1].GetBoard()
+        oldboard = board.GetBoard()
+        for i in range(3):
+            for j in range(3):
+                if (oldboard[i][j]==0) and (newboard[i][j]==self.player):
+                    return (i, j)
+        raise RuntimeError("Something went wrong, no move found")
+        
     
 class AlphaBeta:
     def __init__(self, depth, player):

@@ -27,8 +27,11 @@ twopass = NextMoveProvider(2, 2)
 print(twopass.GetMove(board))
 '''
 
-board = xoBoard([[2,0,1],[1,1,2],[2,0,0]])
-abalg = AlphaBeta(10, 1)
+#board = xoBoard([[2,0,1],[1,1,2],[2,0,0]])
+#abalg = AlphaBeta(10, 1)
 
 #print(fullminimax.minimax(board, 1, True))
-print(abalg.minimaxAlpha(board, 0, -110, -101))
+#print(abalg.minimaxAlpha(board, 0, -110, -101))
+board = xoBoard([[2,0,1],[0,0,0],[0,0,0]])
+mm = MinmaxFull(2, 1)
+print(mm.minimax(board, 1, True, True))
