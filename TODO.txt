@@ -1,0 +1,9 @@
+TODO:
+xoboard.py
+-> board.GetChildren()
+
+xomoves.py
+-> minimax, a working one
+-> alphabeta, a working one
+->minmax getmove format
+

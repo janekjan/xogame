@@ -1,14 +1,14 @@
 
-from xoboard import xoBoard
+from xoboard import xoBoard, verboseLog
 from copy import deepcopy
 
-WEIGHT_OF_WIN = 100
+WEIGHT_OF_WIN = 5
 
 class MinmaxFull:
     def __init__(self, depth, player):
         if depth <= 0:
             raise RuntimeError("Depth must be positive")
-        #self.depth = depth
+        self.depth = depth
         self.player = player
         if player==1: self.opponent = 2
         elif player==2: self.opponent = 1
@@ -21,7 +21,7 @@ class MinmaxFull:
         else:
             raise RuntimeError("Player must be 1 or 2")
 
-    def minimax(self, board, player, returnmove=False):
+    def minimax_old(self, board, player, returnmove=False):
         #print("Hello, Minimax: ", player, board)
         opponent = self.LocalOpponent(player)
         #If final state, return usefulness
@@ -62,9 +62,50 @@ class MinmaxFull:
             #print('returning ', min(minimaxValues))
             return min(minimaxValues)
         raise RuntimeError("Something went wrong!")
+    
+    def CalculateWeight(self, board):
+        verboseLog("calculating weight for", board)
+        if board.HasWon(self.opponent):
+            return [1, board]
+        if board.HasWon(self.player):
+            return [5, board]
+        if board.WinningPos(self.opponent) != []:
+            return [2, board]
+        if board.WinningPos(self.player) != []:
+            return [4, board]
+        return [3, board]
 
+    def minimax(self, board, depth, isItMe):
+        if depth==0:
+            verboseLog('minimax weight==0')
+            pom = self.CalculateWeight(board)
+            return pom[0]
+        if (not isItMe) and board.WinningPos(self.player):
+            return WEIGHT_OF_WIN
+        if isItMe and board.WinningPos(self.opponent):
+            return -WEIGHT_OF_WIN
+        
+        if isItMe:
+            best = -WEIGHT_OF_WIN
+            children = board.GetChildren(self.player)
+            for child in children:
+                pom = self.minimax(child, depth-1, False)
+                best = max(best, pom)
+            return best
+        else:
+            best = WEIGHT_OF_WIN
+            children = board.GetChildren(self.opponent)
+            for child in children:
+                pom = self.minimax(child, depth-1, True)
+                verboseLog('minimax best ', best)
+                verboseLog('minimax pom ', pom)
+                best = min(best, pom)
+            return best
+        raise RuntimeError("Something Went Wrong with recursion!")
+            
+        
     def GetMove(self, board):
-        pass
+        return self.minimax(board, self.depth, True)
     
 class AlphaBeta:
     def __init__(self, depth, player):

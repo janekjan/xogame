@@ -103,6 +103,14 @@ class xoBoard:
     def FlipState(self, x, y, state):
         self.board[x][y] = state
 
+    def GetChildren(self, who):
+        empty = self.GetEmptyPos()
+        children = []
+        for i in empty:
+            children.append(deepcopy(self))
+            children[-1].FlipState(i[0], i[1], who)
+        return children
+
     def __repr__(self):
         return '<'+str(self.board)+" xoBoard>"
 
