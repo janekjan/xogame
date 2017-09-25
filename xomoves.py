@@ -3,6 +3,8 @@ from xoboard import xoBoard, verboseLog
 from copy import deepcopy
 
 WEIGHT_OF_WIN = 5
+INFINITY = 1000000009
+
 
 class MinmaxFull:
     def __init__(self, depth, player):
@@ -136,16 +138,17 @@ class AlphaBeta:
         else:
             raise RuntimeError("Player must be 1 or 2")
 
-    def weight(self, board):
+    def CalculateWeight(self, board):
+        verboseLog("calculating weight for", board)
         if board.HasWon(self.opponent):
-            return -WEIGHT_OF_WIN
+            return [1, board]
         if board.HasWon(self.player):
-            return WEIGHT_OF_WIN
+            return [5, board]
         if board.WinningPos(self.opponent) != []:
-            return -50
+            return [2, board]
         if board.WinningPos(self.player) != []:
-            return 40
-        return 0
+            return [4, board]
+        return [3, board]
 
     def minimaxAlpha(self, board, depth, alpha, beta):
         emptys = board.GetEmptyPos()
@@ -187,6 +190,37 @@ class AlphaBeta:
             if beta <= alpha:
                 return alpha
         return beta
+
+    def alphaBeta(self, board, depth, alpha, beta, isItMe):
+        if depth==0:
+            pom = self.CalculateWeight(board)
+            return pom
+        if isItMe:
+            best = [-INFINITY, 'error']
+            children = board.GetChildren(self.player)
+            for child in children:
+                pom = self.alphaBeta(child, depth-1, alpha, beta, False)
+                if pom[0] >= best[0]:
+                    best = deepcopy(pom)
+                if pom[0] >= alpha[0]:
+                    alpha = deepcopy(pom)
+                if beta[0] <= alpha[0]:
+                    break
+            return best
+        else:
+            best = [INFINITY, 'error']
+            children = board.GetChildren(self.opponent)
+            for child in children:
+                pom = self.alphaBeta(child, depth-1, alpha, beta, True)
+                if best[0] >= pom[0]:
+                    best = deepcopy(pom)
+                if beta[0] >= pom[0]:
+                    beta = deepcopy(pom)
+                if beta[0] <= alpha[0]:
+                    break
+            return best
+        raise RuntimeError("Something Went Wrong with AlphaBeta recursion")
+            
 
     def GetMove(self, board):
         pass
