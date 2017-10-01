@@ -191,7 +191,7 @@ class AlphaBeta:
                 return alpha
         return beta
 
-    def alphaBeta(self, board, depth, alpha, beta, isItMe):
+    def alphaBeta(self, board, depth, alpha, beta, isItMe, chBoard=False):
         if depth==0:
             pom = self.CalculateWeight(board)
             return pom
@@ -202,10 +202,12 @@ class AlphaBeta:
                 pom = self.alphaBeta(child, depth-1, alpha, beta, False)
                 if pom[0] >= best[0]:
                     best = deepcopy(pom)
-                if pom[0] >= alpha[0]:
-                    alpha = deepcopy(pom)
-                if beta[0] <= alpha[0]:
+                if pom[0] >= alpha:
+                    alpha = pom[0]
+                if beta <= alpha:
                     break
+            if not chBoard:
+                best[1] = board
             return best
         else:
             best = [INFINITY, 'error']
@@ -214,13 +216,24 @@ class AlphaBeta:
                 pom = self.alphaBeta(child, depth-1, alpha, beta, True)
                 if best[0] >= pom[0]:
                     best = deepcopy(pom)
-                if beta[0] >= pom[0]:
-                    beta = deepcopy(pom)
-                if beta[0] <= alpha[0]:
+                if beta >= pom[0]:
+                    beta = pom[0]
+                if beta <= alpha:
                     break
+            if not chBoard:
+                best[1] = board
             return best
         raise RuntimeError("Something Went Wrong with AlphaBeta recursion")
             
 
     def GetMove(self, board):
-        pass
+        resboard =  self.alphaBeta(board, self.depth, -INFINITY, INFINITY, True, True)
+        verboseLog('GetMove resboard ', resboard)
+        x, y = -1, -1
+        newboard = resboard[1].GetBoard()
+        oldboard = board.GetBoard()
+        for i in range(3):
+            for j in range(3):
+                if (oldboard[i][j]==0) and (newboard[i][j]==self.player):
+                    return (i, j)
+        raise RuntimeError("Something went wrong, no move found")
