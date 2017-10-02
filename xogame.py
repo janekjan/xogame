@@ -6,7 +6,7 @@ from xoboard import *
 from xomoves import *
 
 #SETTINGS
-PREDICTION_DEPTH = 2
+PREDICTION_DEPTH = 3
 PLAYER_SYMBOL = 2
 I_START = True
 
@@ -63,8 +63,8 @@ clock = pygame.time.Clock()
 pygame.display.set_caption('Gra O i X')
 
 #mover = MinmaxFull(PREDICTION_DEPTH, MY_SYMBOL)
-#mover = NextMoveProvider(PREDICTION_DEPTH, MY_SYMBOL)
-mover = AlphaBeta(PREDICTION_DEPTH, MY_SYMBOL)
+mover = NextMoveProvider(PREDICTION_DEPTH, MY_SYMBOL)
+#mover = AlphaBeta(PREDICTION_DEPTH, MY_SYMBOL)
 
 #prepare gameboard
 board = xoBoard()

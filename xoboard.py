@@ -2,7 +2,7 @@
 
 from copy import deepcopy
 
-VERBOSE = True
+VERBOSE = False
 def verboseLog(s, t=''):
     if VERBOSE:
         print(s, t)

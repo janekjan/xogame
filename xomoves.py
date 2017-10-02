@@ -149,7 +149,7 @@ class AlphaBeta:
         if board.WinningPos(self.player) != []:
             return [4, board]
         return [3, board]
-
+    '''
     def minimaxAlpha(self, board, depth, alpha, beta):
         emptys = board.GetEmptyPos()
         if emptys==[]:
@@ -190,7 +190,7 @@ class AlphaBeta:
             if beta <= alpha:
                 return alpha
         return beta
-
+    '''
     def alphaBeta(self, board, depth, alpha, beta, isItMe, chBoard=False):
         if depth==0:
             pom = self.CalculateWeight(board)
@@ -228,7 +228,7 @@ class AlphaBeta:
 
     def GetMove(self, board):
         resboard =  self.alphaBeta(board, self.depth, -INFINITY, INFINITY, True, True)
-        verboseLog('GetMove resboard ', resboard)
+        print('GetMove resboard ', resboard)
         x, y = -1, -1
         newboard = resboard[1].GetBoard()
         oldboard = board.GetBoard()
